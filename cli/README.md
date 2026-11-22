@@ -107,7 +107,15 @@ contains only public manifest and registry fields, but hashes and addresses
 can still be sensitive in context; restrict receipt access accordingly.
 
 Manifest v2 adds `verifierScope` and `epoch`, matching the frontend. V1 input
-remains readable, without silently upgrading its version. Existing v1 receipt
+remains readable, without silently upgrading its version.
+
+Unknown optional manifest extensions are preserved during normalization. An
+extension is carried through verbatim (round-trip compatible) under its
+original key and never alters the critical statement identity fields used for
+the manifest hash and registry binding. Extensions marked as required
+(`required: true`) with semantics this CLI does not support are rejected with
+exit code `8` (`error`) rather than silently dropped, so verification fails
+closed. Missing or supported optional extensions behave as before. Existing v1 receipt
 shape and exit-code mapping remain unchanged. For rollback, deploy the prior
 CLI build; no chain, metadata, or registry migration is required. The trust
 boundary is the selected Stellar RPC and local clock (used to detect elapsed
